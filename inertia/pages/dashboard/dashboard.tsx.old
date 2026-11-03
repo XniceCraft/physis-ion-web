@@ -1,0 +1,429 @@
+import { useState } from 'react'
+
+import { FermentationChart } from '@/components/fermentation_chart'
+import { Navbar } from '@/components/navbar/navbar'
+import { Sparkline } from '@/components/sparkline'
+import { Card } from '@/components/ui/card'
+
+import {
+  ArrowClockwise,
+  ArrowDownRight,
+  ArrowUpRight,
+  Check,
+  CheckCircle,
+  Clock,
+  Drop,
+  Faders,
+  Info,
+  Plant,
+  ThermometerSimple,
+  Waves,
+} from '@phosphor-icons/react/ssr'
+
+export default function Home() {
+  const [showPh, setShowPh] = useState(true)
+  const [showTds, setShowTds] = useState(true)
+  const [showTemp, setShowTemp] = useState(true)
+
+  const phSparkline = 'M 4 8 C 20 10, 35 14, 50 18 C 65 22, 75 25, 82 23 C 88 21, 93 27, 96 28'
+  const tdsSparkline = 'M 4 28 C 15 27, 25 24, 35 22 C 45 20, 55 16, 65 18 C 75 16, 85 11, 96 8'
+  const tempSparkline =
+    'M 4 22 C 12 24, 18 14, 25 14 C 32 14, 38 23, 45 23 C 52 23, 58 10, 65 10 C 72 10, 78 20, 85 20 C 90 20, 93 17, 96 16'
+
+  return (
+    <div className="text-foreground min-h-screen bg-[#f8fafc] antialiased selection:bg-blue-100">
+      <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+        <Navbar />
+
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="font-heading text-base font-bold text-slate-900">Live readings</h2>
+            <span className="text-muted-foreground text-xs">Last sample · 08:00 UTC</span>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <Card className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs ring-0">
+              <div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="flex size-7 items-center justify-center rounded-lg border border-blue-100/80 bg-blue-50 text-blue-600">
+                      <Drop size={16} weight="bold" />
+                    </div>
+                    <span className="font-heading text-sm font-bold text-slate-900">pH</span>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex items-center justify-between gap-2">
+                  <div>
+                    <div className="font-heading text-3xl font-extrabold tracking-tight text-slate-900">
+                      3.32
+                    </div>
+                    <div className="mt-1 flex items-center gap-1 text-xs font-semibold text-blue-600">
+                      <ArrowDownRight size={13} weight="bold" />
+                      <span>0.04 / day</span>
+                    </div>
+                  </div>
+                  <div className="h-9 w-28 shrink-0">
+                    <Sparkline path={phSparkline} strokeColor="#2563eb" className="h-full w-full" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 grid grid-cols-3 border-t border-slate-100 pt-3 text-center">
+                <div className="text-left">
+                  <div className="text-muted-foreground text-[11px]">Min · 7d</div>
+                  <div className="mt-0.5 text-xs font-bold text-slate-800">3.32</div>
+                </div>
+                <div>
+                  <div className="text-muted-foreground text-[11px]">Avg · 7d</div>
+                  <div className="mt-0.5 text-xs font-bold text-slate-800">3.44</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-muted-foreground text-[11px]">Max · 7d</div>
+                  <div className="mt-0.5 text-xs font-bold text-slate-800">3.56</div>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs ring-0">
+              <div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="flex size-7 items-center justify-center rounded-lg border border-cyan-100/80 bg-cyan-50 text-cyan-600">
+                      <Waves size={16} weight="bold" />
+                    </div>
+                    <span className="font-heading text-sm font-bold text-slate-900">TDS</span>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex items-center justify-between gap-2">
+                  <div>
+                    <div className="flex items-baseline">
+                      <span className="font-heading text-3xl font-extrabold tracking-tight text-slate-900">
+                        1,284
+                      </span>
+                      <span className="text-muted-foreground ml-1.5 text-xs font-normal">ppm</span>
+                    </div>
+                    <div className="mt-1 flex items-center gap-1 text-xs font-semibold text-cyan-600">
+                      <ArrowUpRight size={13} weight="bold" />
+                      <span>6 ppm / day</span>
+                    </div>
+                  </div>
+                  <div className="h-9 w-28 shrink-0">
+                    <Sparkline
+                      path={tdsSparkline}
+                      strokeColor="#0ea5e9"
+                      className="h-full w-full"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 grid grid-cols-3 border-t border-slate-100 pt-3 text-center">
+                <div className="text-left">
+                  <div className="text-muted-foreground text-[11px]">Min · 7d</div>
+                  <div className="mt-0.5 text-xs font-bold text-slate-800">1,248</div>
+                </div>
+                <div>
+                  <div className="text-muted-foreground text-[11px]">Avg · 7d</div>
+                  <div className="mt-0.5 text-xs font-bold text-slate-800">1,266</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-muted-foreground text-[11px]">Max · 7d</div>
+                  <div className="mt-0.5 text-xs font-bold text-slate-800">1,284</div>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs ring-0">
+              <div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="flex size-7 items-center justify-center rounded-lg border border-emerald-100/80 bg-emerald-50 text-emerald-600">
+                      <ThermometerSimple size={16} weight="bold" />
+                    </div>
+                    <span className="font-heading text-sm font-bold text-slate-900">
+                      Temperature
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex items-center justify-between gap-2">
+                  <div>
+                    <div className="flex items-baseline">
+                      <span className="font-heading text-3xl font-extrabold tracking-tight text-slate-900">
+                        27.6
+                      </span>
+                      <span className="text-muted-foreground ml-1.5 text-xs font-normal">°C</span>
+                    </div>
+                    <div className="mt-1 flex items-center gap-1 text-xs font-semibold text-emerald-600">
+                      <ArrowUpRight size={13} weight="bold" />
+                      <span>0.2 °C / 24h</span>
+                    </div>
+                  </div>
+                  <div className="h-9 w-28 shrink-0">
+                    <Sparkline
+                      path={tempSparkline}
+                      strokeColor="#059669"
+                      className="h-full w-full"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 grid grid-cols-3 border-t border-slate-100 pt-3 text-center">
+                <div className="text-left">
+                  <div className="text-muted-foreground text-[11px]">Min · 7d</div>
+                  <div className="mt-0.5 text-xs font-bold text-slate-800">26.8°</div>
+                </div>
+                <div>
+                  <div className="text-muted-foreground text-[11px]">Avg · 7d</div>
+                  <div className="mt-0.5 text-xs font-bold text-slate-800">27.3°</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-muted-foreground text-[11px]">Max · 7d</div>
+                  <div className="mt-0.5 text-xs font-bold text-slate-800">27.8°</div>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </section>
+
+        <Card className="rounded-xl border border-slate-200/80 bg-white p-6 shadow-xs ring-0">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h2 className="font-heading text-base font-bold text-slate-900">
+                Fermentation trends
+              </h2>
+              <p className="text-muted-foreground mt-0.5 text-xs">
+                14-20 Oct 2026 · sampled every 8h
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setShowPh(!showPh)}
+                className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold transition-all ${
+                  showPh
+                    ? 'border-blue-200 bg-blue-50/60 text-blue-900'
+                    : 'border-slate-200 bg-slate-50 text-slate-400 opacity-60'
+                }`}
+              >
+                <Check
+                  size={12}
+                  weight="bold"
+                  className={showPh ? 'text-blue-600' : 'text-slate-400'}
+                />
+                <span>pH</span>
+                <span className="font-bold text-slate-900">3.32</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowTds(!showTds)}
+                className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold transition-all ${
+                  showTds
+                    ? 'border-cyan-200 bg-cyan-50/60 text-cyan-900'
+                    : 'border-slate-200 bg-slate-50 text-slate-400 opacity-60'
+                }`}
+              >
+                <Check
+                  size={12}
+                  weight="bold"
+                  className={showTds ? 'text-cyan-600' : 'text-slate-400'}
+                />
+                <span>TDS</span>
+                <span className="font-bold text-slate-900">1,284 ppm</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowTemp(!showTemp)}
+                className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold transition-all ${
+                  showTemp
+                    ? 'border-emerald-200 bg-emerald-50/60 text-emerald-900'
+                    : 'border-slate-200 bg-slate-50 text-slate-400 opacity-60'
+                }`}
+              >
+                <Check
+                  size={12}
+                  weight="bold"
+                  className={showTemp ? 'text-emerald-600' : 'text-slate-400'}
+                />
+                <span>Temp</span>
+                <span className="font-bold text-slate-900">27.6 °C</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="text-muted-foreground mt-3 flex items-center gap-1.5 text-xs">
+            <Info size={13} weight="bold" className="shrink-0" />
+            <span>Index · first reading = 100. Relative change, not shared units.</span>
+          </div>
+
+          <div className="mt-4">
+            <FermentationChart showPh={showPh} showTds={showTds} showTemp={showTemp} />
+          </div>
+
+          <div className="text-muted-foreground mt-4 flex flex-col gap-2 border-t border-slate-100 pt-3 text-xs sm:flex-row sm:items-center sm:justify-between">
+            <div>Baseline 14 Oct: pH 3.56 · TDS 1,248 ppm · Temp 27.2 °C</div>
+            <div className="flex items-center gap-4">
+              <span className="inline-flex items-center gap-1.5">
+                <ArrowClockwise size={13} weight="bold" className="text-slate-600" />
+                <span>16 Oct · Probe rinse</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Faders size={13} weight="bold" className="text-slate-600" />
+                <span>18 Oct · Vent check</span>
+              </span>
+            </div>
+          </div>
+        </Card>
+
+        <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <Card className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-6 shadow-xs ring-0">
+            <div>
+              <div className="flex items-center justify-between">
+                <h2 className="font-heading text-base font-bold text-slate-900">Sampling</h2>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
+                  <span className="size-1.5 rounded-full bg-emerald-500" />
+                  On schedule
+                </span>
+              </div>
+
+              <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-4">
+                  <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
+                    <CheckCircle size={15} weight="fill" className="shrink-0 text-emerald-600" />
+                    <span>Last sample</span>
+                  </div>
+                  <div className="mt-2 flex items-baseline">
+                    <span className="font-heading text-2xl font-bold text-slate-900">08:00</span>
+                    <span className="text-muted-foreground ml-1.5 text-xs font-normal">UTC</span>
+                  </div>
+                  <div className="text-muted-foreground mt-1 text-xs">20 Oct · successful</div>
+                </div>
+
+                <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-4">
+                  <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-medium">
+                    <Clock size={15} weight="bold" className="shrink-0 text-blue-600" />
+                    <span>Next sample</span>
+                  </div>
+                  <div className="mt-2 flex items-baseline">
+                    <span className="font-heading text-2xl font-bold text-slate-900">16:00</span>
+                    <span className="text-muted-foreground ml-1.5 text-xs font-normal">UTC</span>
+                  </div>
+                  <div className="text-muted-foreground mt-1 text-xs">20 Oct · in 7h 48m</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 divide-y divide-slate-100 pt-2 text-xs">
+              <div className="flex items-center justify-between py-2.5">
+                <span className="text-muted-foreground">Sampling interval</span>
+                <span className="font-bold text-slate-900">Every 8 hours</span>
+                <span className="text-muted-foreground">3 samples / day</span>
+              </div>
+              <div className="flex items-center justify-between py-2.5">
+                <span className="text-muted-foreground">Pump cycles</span>
+                <span className="font-bold text-slate-900">291</span>
+                <span className="text-muted-foreground">3 cycles / sample</span>
+              </div>
+              <div className="flex items-center justify-between py-2.5">
+                <span className="text-muted-foreground">Failed samples</span>
+                <span className="font-bold text-emerald-600">0 / 97</span>
+                <span className="text-muted-foreground">Since batch start</span>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-6 shadow-xs ring-0">
+            <div>
+              <div className="flex items-center justify-between">
+                <h2 className="font-heading text-base font-bold text-slate-900">
+                  Recent batch events
+                </h2>
+                <span className="text-muted-foreground text-xs">UTC</span>
+              </div>
+
+              <div className="mt-4 space-y-3.5">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg border border-emerald-100/80 bg-emerald-50 text-emerald-600">
+                      <Check size={16} weight="bold" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">Sample collected</div>
+                      <div className="text-muted-foreground text-xs">
+                        All 3 sensors passed validation
+                      </div>
+                    </div>
+                  </div>
+                  <div className="shrink-0 text-right text-xs">
+                    <div className="font-medium text-slate-700">20 Oct</div>
+                    <div className="text-muted-foreground text-[11px]">08:00</div>
+                  </div>
+                </div>
+
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg border border-blue-100/80 bg-blue-50 text-blue-600">
+                      <Faders size={16} weight="bold" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">Vent check complete</div>
+                      <div className="text-muted-foreground text-xs">
+                        Pressure released · seal secured
+                      </div>
+                    </div>
+                  </div>
+                  <div className="shrink-0 text-right text-xs">
+                    <div className="font-medium text-slate-700">18 Oct</div>
+                    <div className="text-muted-foreground text-[11px]">16:00</div>
+                  </div>
+                </div>
+
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg border border-cyan-100/80 bg-cyan-50 text-cyan-600">
+                      <ArrowClockwise size={16} weight="bold" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">Probe rinse complete</div>
+                      <div className="text-muted-foreground text-xs">
+                        Automatic cleaning cycle finished
+                      </div>
+                    </div>
+                  </div>
+                  <div className="shrink-0 text-right text-xs">
+                    <div className="font-medium text-slate-700">16 Oct</div>
+                    <div className="text-muted-foreground text-[11px]">08:00</div>
+                  </div>
+                </div>
+
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg border border-emerald-100/80 bg-emerald-50 text-emerald-600">
+                      <Plant size={16} weight="bold" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">Batch started</div>
+                      <div className="text-muted-foreground text-xs">
+                        EE-032 · recipe ratio 1:3:10
+                      </div>
+                    </div>
+                  </div>
+                  <div className="shrink-0 text-right text-xs">
+                    <div className="font-medium text-slate-700">18 Sep</div>
+                    <div className="text-muted-foreground text-[11px]">08:00</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </section>
+      </div>
+    </div>
+  )
+}

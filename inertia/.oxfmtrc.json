@@ -1,0 +1,33 @@
+{
+  "$schema": "../node_modules/oxfmt/configuration_schema.json",
+  "semi": false,
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "printWidth": 100,
+  "sortTailwindcss": true,
+  "sortImports": {
+    "newlinesBetween": true,
+    "customGroups": [
+      {
+        "groupName": "use-prefixed",
+        "elementNamePattern": ["use-*", "**/use-*"]
+      },
+      {
+        "groupName": "react",
+        "elementNamePattern": ["react", "react/**", "react-dom", "react-dom/**"]
+      },
+      {
+        "groupName": "components",
+        "elementNamePattern": ["@/components/**"]
+      }
+    ],
+    "groups": [
+      "use-prefixed",
+      "react",
+      "components",
+      "external",
+      ["parent", "sibling", "index"],
+      "unknown"
+    ]
+  }
+}

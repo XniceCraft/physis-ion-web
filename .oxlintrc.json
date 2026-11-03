@@ -1,0 +1,81 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["oxc", "eslint", "typescript", "unicorn", "node"],
+  "categories": {
+    "correctness": "error"
+  },
+  "options": {
+    "typeAware": true,
+    "typeCheck": true
+  },
+  "ignorePatterns": [
+    ".agents/**",
+    ".codegraph/**",
+    ".hallmark/**",
+    ".rtk/**",
+    "node_modules/**",
+    "public/**",
+    "build/**",
+    "tmp/**",
+    "inertia/**",
+    "public/assets/**",
+    "resources/**",
+    ".adonisjs/**",
+    "database/schema.ts"
+  ],
+  "rules": {
+    "curly": "off",
+    "eqeqeq": ["error", "always"],
+    "no-array-constructor": "error",
+    "no-caller": "error",
+    "no-cond-assign": ["error", "except-parens"],
+    "no-constant-condition": "error",
+    "no-control-regex": "error",
+    "no-debugger": "error",
+    "no-duplicate-case": "error",
+    "no-eval": "error",
+    "no-ex-assign": "error",
+    "no-extra-boolean-cast": "error",
+    "no-fallthrough": "error",
+    "no-inner-declarations": "error",
+    "no-invalid-regexp": ["error", { "allowConstructorFlags": ["u", "y"] }],
+    "no-irregular-whitespace": "error",
+    "no-new-wrappers": "error",
+    "no-proto": "error",
+    "no-regex-spaces": "error",
+    "no-self-assign": "error",
+    "no-self-compare": "error",
+    "no-shadow": "off",
+    "no-sparse-arrays": "error",
+    "no-this-before-super": "error",
+    "no-unreachable": "error",
+    "no-unsafe-finally": "error",
+    "no-unsafe-negation": "error",
+    "no-with": "error",
+    "use-isnan": "error",
+    "valid-typeof": ["error", { "requireStringLiterals": true }],
+
+    "node/handle-callback-err": ["error", "^(err|error)$"],
+
+    "typescript/consistent-type-imports": [
+      "error",
+      {
+        "fixStyle": "inline-type-imports",
+        "disallowTypeAnnotations": false
+      }
+    ],
+    "typescript/no-shadow": "error",
+    "typescript/no-floating-promises": "off",
+
+    "unicorn/prefer-module": "error",
+    "unicorn/prefer-node-protocol": "error",
+    "unicorn/no-useless-spread": "off",
+    "unicorn/filename-case": ["error", { "case": "snakeCase" }],
+    "unicorn/no-await-expression-member": "error",
+    "unicorn/no-instanceof-builtins": "error",
+    "unicorn/prefer-number-properties": "error"
+  },
+  "env": {
+    "builtin": true
+  }
+}

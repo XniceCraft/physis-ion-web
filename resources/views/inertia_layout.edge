@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html className="h-full antialiased"
+  data-theme="{{ request.plainCookie('app_theme', { defaultValue: 'light', encoded: false }) }}">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title data-inertia>
+    Physis ION
+  </title>
+
+  @viteReactRefresh()
+  @vite(['inertia/app.tsx'])
+  @inertiaHead()
+  @stack('dumper')
+</head>
+
+<body className="min-h-full flex flex-col bg-[#f8fafc]">
+  @inertia()
+  {{--
+  <script crossOrigin="anonymous" src="//unpkg.com/react-scan/dist/auto.global.js"></script> --}}
+</body>
+
+</html>
