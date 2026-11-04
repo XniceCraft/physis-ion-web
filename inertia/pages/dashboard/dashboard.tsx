@@ -1,10 +1,9 @@
-import { Navbar } from '@/components/navbar/navbar'
-
-import { Drop, ThermometerSimple, Waves } from '@phosphor-icons/react/ssr'
-
 import { AnomalyCard } from './_components/anomaly-card'
 import { MetricsChart } from './_components/metrics-chart'
 import { OverviewCard } from './_components/overview-card'
+import { Navbar } from '@/components/navbar/navbar'
+import { DropIcon, ThermometerSimpleIcon, WavesIcon } from '@phosphor-icons/react/ssr'
+import { useMemo } from 'react'
 
 import type { InertiaProps } from '@/types'
 
@@ -62,10 +61,13 @@ export default function Dashboard({
   days: number
 }>) {
   const statPeriod = `${days}d`
-  const lastDate = chartData.at(-1)?.date
-  const lastSampleTime = lastDate
-    ? new Date(lastDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-    : '--'
+  const lastSampleTime = useMemo(() => {
+    const lastDate = chartData.at(-1)?.date
+
+    return lastDate
+      ? new Date(lastDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      : '--'
+  }, [chartData])
 
   return (
     <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
@@ -78,61 +80,83 @@ export default function Dashboard({
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <OverviewCard
-            icon={
-              <div className="flex size-7 items-center justify-center rounded-lg border border-blue-100/80 bg-blue-50 text-blue-600">
-                <Drop size={16} weight="bold" />
+          <OverviewCard.Root sparklineColor="#2563eb" trend={stats.ph.trend}>
+            <div>
+              <OverviewCard.Header
+                icon={
+                  <div className="flex size-7 items-center justify-center rounded-lg border border-blue-100/80 bg-blue-50 text-blue-600">
+                    <DropIcon size={16} weight="bold" />
+                  </div>
+                }
+                label="pH"
+              />
+              <div className="mt-4 flex items-center justify-between gap-2">
+                <div>
+                  <OverviewCard.Value value={stats.ph.latest?.toFixed(2) ?? '--'} />
+                  <OverviewCard.Trend trendUnit="/ day" />
+                </div>
+                <OverviewCard.Sparkline path={buildSparklinePath(chartData, 'ph')} />
               </div>
-            }
-            label="pH"
-            value={stats.ph.latest?.toFixed(2) ?? '--'}
-            trend={stats.ph.trend}
-            trendUnit="/ day"
-            sparklinePath={buildSparklinePath(chartData, 'ph')}
-            sparklineColor="#2563eb"
-            min={stats.ph.min?.toFixed(2) ?? null}
-            avg={stats.ph.avg?.toFixed(2) ?? null}
-            max={stats.ph.max?.toFixed(2) ?? null}
-            statPeriod={statPeriod}
-          />
+            </div>
+            <OverviewCard.Stats
+              min={stats.ph.min?.toFixed(2) ?? null}
+              avg={stats.ph.avg?.toFixed(2) ?? null}
+              max={stats.ph.max?.toFixed(2) ?? null}
+              period={statPeriod}
+            />
+          </OverviewCard.Root>
 
-          <OverviewCard
-            icon={
-              <div className="flex size-7 items-center justify-center rounded-lg border border-cyan-100/80 bg-cyan-50 text-cyan-600">
-                <Waves size={16} weight="bold" />
+          <OverviewCard.Root sparklineColor="#0ea5e9" trend={stats.ppm.trend}>
+            <div>
+              <OverviewCard.Header
+                icon={
+                  <div className="flex size-7 items-center justify-center rounded-lg border border-cyan-100/80 bg-cyan-50 text-cyan-600">
+                    <WavesIcon size={16} weight="bold" />
+                  </div>
+                }
+                label="TDS"
+              />
+              <div className="mt-4 flex items-center justify-between gap-2">
+                <div>
+                  <OverviewCard.Value value={stats.ppm.latest?.toFixed(0) ?? '--'} unit="ppm" />
+                  <OverviewCard.Trend trendUnit="ppm / day" />
+                </div>
+                <OverviewCard.Sparkline path={buildSparklinePath(chartData, 'ppm')} />
               </div>
-            }
-            label="TDS"
-            value={stats.ppm.latest?.toFixed(0) ?? '--'}
-            unit="ppm"
-            trend={stats.ppm.trend}
-            trendUnit="ppm / day"
-            sparklinePath={buildSparklinePath(chartData, 'ppm')}
-            sparklineColor="#0ea5e9"
-            min={stats.ppm.min?.toFixed(0) ?? null}
-            avg={stats.ppm.avg?.toFixed(0) ?? null}
-            max={stats.ppm.max?.toFixed(0) ?? null}
-            statPeriod={statPeriod}
-          />
+            </div>
+            <OverviewCard.Stats
+              min={stats.ppm.min?.toFixed(0) ?? null}
+              avg={stats.ppm.avg?.toFixed(0) ?? null}
+              max={stats.ppm.max?.toFixed(0) ?? null}
+              period={statPeriod}
+            />
+          </OverviewCard.Root>
 
-          <OverviewCard
-            icon={
-              <div className="flex size-7 items-center justify-center rounded-lg border border-emerald-100/80 bg-emerald-50 text-emerald-600">
-                <ThermometerSimple size={16} weight="bold" />
+          <OverviewCard.Root sparklineColor="#059669" trend={stats.temp.trend}>
+            <div>
+              <OverviewCard.Header
+                icon={
+                  <div className="flex size-7 items-center justify-center rounded-lg border border-emerald-100/80 bg-emerald-50 text-emerald-600">
+                    <ThermometerSimpleIcon size={16} weight="bold" />
+                  </div>
+                }
+                label="Temperature"
+              />
+              <div className="mt-4 flex items-center justify-between gap-2">
+                <div>
+                  <OverviewCard.Value value={stats.temp.latest?.toFixed(1) ?? '--'} unit="°C" />
+                  <OverviewCard.Trend trendUnit="°C / 24h" />
+                </div>
+                <OverviewCard.Sparkline path={buildSparklinePath(chartData, 'temp')} />
               </div>
-            }
-            label="Temperature"
-            value={stats.temp.latest?.toFixed(1) ?? '--'}
-            unit="°C"
-            trend={stats.temp.trend}
-            trendUnit="°C / 24h"
-            sparklinePath={buildSparklinePath(chartData, 'temp')}
-            sparklineColor="#059669"
-            min={stats.temp.min?.toFixed(1) ?? null}
-            avg={stats.temp.avg?.toFixed(1) ?? null}
-            max={stats.temp.max?.toFixed(1) ?? null}
-            statPeriod={statPeriod}
-          />
+            </div>
+            <OverviewCard.Stats
+              min={stats.temp.min?.toFixed(1) ?? null}
+              avg={stats.temp.avg?.toFixed(1) ?? null}
+              max={stats.temp.max?.toFixed(1) ?? null}
+              period={statPeriod}
+            />
+          </OverviewCard.Root>
         </div>
       </section>
 

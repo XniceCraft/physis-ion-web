@@ -10,24 +10,25 @@
     "customGroups": [
       {
         "groupName": "use-prefixed",
-        "elementNamePattern": ["use-*", "**/use-*"]
+        "elementNamePattern": ["use-*", "**/use-*"],
+        "modifiers": ["value"]
       },
       {
         "groupName": "react",
-        "elementNamePattern": ["react", "react/**", "react-dom", "react-dom/**"]
+        "elementNamePattern": ["react", "react/**", "react-dom", "react-dom/**"],
+        "modifiers": ["value"]
       },
       {
         "groupName": "components",
-        "elementNamePattern": ["@/components/**"]
+        "elementNamePattern": ["@/components/**"],
+        "modifiers": ["value"]
       }
     ],
     "groups": [
-      "use-prefixed",
-      "react",
-      "components",
-      "external",
-      ["parent", "sibling", "index"],
-      "unknown"
+      ["use-prefixed", "react"],
+      ["components", "value-external", "value-parent", "value-sibling", "value-index"],
+      "unknown",
+      "type-import"
     ]
   }
 }

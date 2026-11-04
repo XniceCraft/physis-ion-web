@@ -51,11 +51,11 @@ export class DatumSchema extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
   @column()
-  declare ph: number | null
+  declare ph: number
   @column()
-  declare ppm: number | null
+  declare ppm: number
   @column()
-  declare temp: number | null
+  declare temp: number
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 }

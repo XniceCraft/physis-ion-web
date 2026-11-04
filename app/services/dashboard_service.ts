@@ -65,13 +65,16 @@ function detectAnomalyReasons(
 }
 
 export async function getDashboardData(days: number): Promise<DashboardData> {
-  const since = DateTime.now().minus({ days }).toISO()
+  const startDate = DateTime.now().minus({ days }).startOf('day')
+  const endDate = DateTime.now().endOf('day')
 
-  const records = await Datum.query().where('created_at', '>=', since).orderBy('created_at', 'asc')
+  const records = await Datum.query()
+    .whereBetween('created_at', [startDate.toSQL(), endDate.toSQL()])
+    .orderBy('created_at', 'asc')
 
-  const phValues = records.map((r) => r.ph).filter((v): v is number => v !== null)
-  const ppmValues = records.map((r) => r.ppm).filter((v): v is number => v !== null)
-  const tempValues = records.map((r) => r.temp).filter((v): v is number => v !== null)
+  const phValues = records.map((r) => r.ph)
+  const ppmValues = records.map((r) => r.ppm)
+  const tempValues = records.map((r) => r.temp)
 
   const stats = {
     ph: computeStats(phValues),

@@ -4,6 +4,7 @@ export const storeDataValidator = vine.create({
   ph: vine.number().min(0).max(14),
   ppm: vine.number(),
   temp: vine.number(),
+  createdAt: vine.date().optional(),
 })
 
 export const dashboardFilterValidator = vine.create({
