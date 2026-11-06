@@ -1,11 +1,10 @@
 import './css/app.css'
 import { createRoot } from 'react-dom/client'
 
+import { client } from './client'
 import { resolvePageComponent } from '@adonisjs/inertia/helpers'
 import { TuyauProvider } from '@adonisjs/inertia/react'
 import { createInertiaApp, type ResolvedComponent } from '@inertiajs/react'
-
-import { client } from './client'
 
 const appName = import.meta.env.VITE_APP_NAME
 

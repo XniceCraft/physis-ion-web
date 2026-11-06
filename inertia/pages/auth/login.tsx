@@ -6,7 +6,6 @@ import { Card } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-
 import { useRouter } from '@adonisjs/inertia/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Head } from '@inertiajs/react'

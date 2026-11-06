@@ -25,11 +25,14 @@ type ChartPoint = {
   temp: number | null
 }
 
+type AlertLevel = 1 | 2 | 3 | 4
+
 type DashboardData = {
   stats: { ph: MetricStats; ppm: MetricStats; temp: MetricStats }
   chartData: ChartPoint[]
   anomalies: AnomalyRecord[]
   days: number
+  alertLevel: AlertLevel
 }
 
 function computeStats(values: number[]): MetricStats {
@@ -42,6 +45,32 @@ function computeStats(values: number[]): MetricStats {
   const latest = values[values.length - 1]
   const previous = values.length >= 2 ? values[values.length - 2] : latest
   return { min, max, avg, latest, trend: latest - previous }
+}
+
+function classifyAlertLevel(
+  ph: number | null,
+  ppm: number | null,
+  temp: number | null
+): AlertLevel {
+  if (ph === null || ppm === null || temp === null) return 4
+
+  const phOk = ph >= 2.5 && ph <= 5.0
+  const ppmOk = ppm >= 800 && ppm <= 2000
+  const tempOk = temp >= 20 && temp <= 35
+
+  const deviations = [
+    phOk ? 0 : Math.max(Math.abs(ph - 2.5), Math.abs(ph - 5.0)),
+    ppmOk ? 0 : Math.max(Math.abs(ppm - 800), Math.abs(ppm - 2000)),
+    tempOk ? 0 : Math.max(Math.abs(temp - 20), Math.abs(temp - 35)),
+  ]
+
+  const maxDev = Math.max(...deviations)
+  const outCount = [phOk, ppmOk, tempOk].filter((ok) => !ok).length
+
+  if (outCount === 0) return 1
+  if (outCount === 1 && maxDev < 1) return 2
+  if (outCount >= 2 || maxDev >= 1) return 4
+  return 3
 }
 
 function detectAnomalyReasons(
@@ -110,5 +139,8 @@ export async function getDashboardData(days: number): Promise<DashboardData> {
       reasons: detectAnomalyReasons(r.ph, r.ppm, r.temp),
     }))
 
-  return { stats, chartData, anomalies, days }
+  const latest = records[records.length - 1]
+  const alertLevel = latest ? classifyAlertLevel(latest.ph, latest.ppm, latest.temp) : 1
+
+  return { stats, chartData, anomalies, days, alertLevel }
 }

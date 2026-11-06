@@ -15,6 +15,8 @@ export default class InsertUser extends BaseCommand {
   }
 
   async run() {
+    const name = await this.prompt.ask('Enter name')
+
     const email = await this.prompt.ask('Enter email', {
       validate: (value) => (value.includes('@') ? true : 'Email is invalid'),
     })
@@ -29,6 +31,7 @@ export default class InsertUser extends BaseCommand {
     const role = await this.prompt.choice('Select role', ['admin', 'user', 'esp'])
 
     await User.create({
+      name,
       email,
       password,
       role,

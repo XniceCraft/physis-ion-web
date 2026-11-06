@@ -19,5 +19,6 @@ declare module '@adonisjs/inertia/types' {
     'dashboard/dashboard': ExtractProps<(typeof import('../../inertia/pages/dashboard/dashboard.tsx'))['default']>
     'errors/not_found': ExtractProps<(typeof import('../../inertia/pages/errors/not_found.tsx'))['default']>
     'errors/server_error': ExtractProps<(typeof import('../../inertia/pages/errors/server_error.tsx'))['default']>
+    'dashboard/_components/alert-banner': ExtractProps<(typeof import('../../inertia/pages/dashboard/_components/alert-banner.tsx'))['default']>
   }
 }

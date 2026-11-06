@@ -1,9 +1,11 @@
+import { useMemo } from 'react'
+
+import { AlertBanner } from './_components/alert-banner'
 import { AnomalyCard } from './_components/anomaly-card'
 import { MetricsChart } from './_components/metrics-chart'
 import { OverviewCard } from './_components/overview-card'
 import { Navbar } from '@/components/navbar/navbar'
 import { DropIcon, ThermometerSimpleIcon, WavesIcon } from '@phosphor-icons/react/ssr'
-import { useMemo } from 'react'
 
 import type { InertiaProps } from '@/types'
 
@@ -54,11 +56,13 @@ export default function Dashboard({
   chartData,
   anomalies,
   days,
+  alertLevel,
 }: InertiaProps<{
   stats: { ph: MetricStats; ppm: MetricStats; temp: MetricStats }
   chartData: ChartPoint[]
   anomalies: Anomaly[]
   days: number
+  alertLevel: 1 | 2 | 3 | 4
 }>) {
   const statPeriod = `${days}d`
   const lastSampleTime = useMemo(() => {
@@ -73,9 +77,11 @@ export default function Dashboard({
     <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       <Navbar />
 
+      <AlertBanner alertLevel={1} />
+
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="font-heading text-base font-bold text-slate-900">Overview</h2>
+          <h2 className="font-heading text-base font-bold text-slate-900">Eco-Enzyme Overview</h2>
           <span className="text-muted-foreground text-xs">Last sample · {lastSampleTime}</span>
         </div>
 

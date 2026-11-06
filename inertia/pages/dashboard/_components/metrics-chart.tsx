@@ -5,7 +5,6 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from '@/components/ui/chart'
-
 import { router } from '@inertiajs/react'
 import { CartesianGrid, Line, LineChart, XAxis } from 'recharts'
 

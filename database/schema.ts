@@ -51,11 +51,11 @@ export class DatumSchema extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
   @column()
-  declare ph: number
+  declare ph: number | null
   @column()
-  declare ppm: number
+  declare ppm: number | null
   @column()
-  declare temp: number
+  declare temp: number | null
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 }
@@ -87,7 +87,7 @@ export class UserSchema extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
   @column()
-  declare name: string | null
+  declare name: string
   @column({ serializeAs: null })
   declare password: string
   @column()

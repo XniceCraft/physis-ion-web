@@ -1,7 +1,6 @@
 import { BrandIcon } from '@/components/icon/brand'
 import { Button } from '@/components/ui/button'
-
-import { GearIcon } from '@phosphor-icons/react/ssr'
+import { BellIcon } from '@phosphor-icons/react/ssr'
 
 export function Navbar() {
   return (
@@ -23,7 +22,7 @@ export function Navbar() {
 
       <div className="flex items-center gap-2 text-xs">
         <Button size="icon-lg" variant="ghost">
-          <GearIcon />
+          <BellIcon />
         </Button>
       </div>
     </header>

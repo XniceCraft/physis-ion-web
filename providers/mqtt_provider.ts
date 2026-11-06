@@ -49,20 +49,16 @@ export default class MqttProvider {
 
     client.on('connect', () => {
       logger.info('MQTT connected')
-      client.subscribe('physis/# ', (err) => {
-        if (err) logger.error({ err }, 'MQTT subscribe failed')
-      })
     })
 
-    client.on('message', async (topic, payload) => {
-      try {
-        const data = JSON.parse(payload.toString())
-        logger.info({ topic, data }, 'MQTT message')
-        // TODO: save it, e.g. await Reading.create({ topic, value: data.value })
-      } catch (err) {
-        logger.error({ err, topic }, 'MQTT message handling failed')
-      }
-    })
+    // client.on('message', async (topic, payload) => {
+    //   try {
+    //     const data = JSON.parse(payload.toString())
+    //     logger.info({ topic, data }, 'MQTT message')
+    //   } catch (err) {
+    //     logger.error({ err, topic }, 'MQTT message handling failed')
+    //   }
+    // })
 
     client.on('error', (err) => logger.error({ err }, 'MQTT error'))
     client.on('close', () => logger.warn('MQTT connection closed'))
