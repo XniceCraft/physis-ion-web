@@ -1,174 +1,137 @@
-import { useMemo } from 'react'
-
-import { AlertBanner } from './_components/alert-banner'
-import { AnomalyCard } from './_components/anomaly-card'
-import { MetricsChart } from './_components/metrics-chart'
-import { OverviewCard } from './_components/overview-card'
+import { SensorChart } from './_components/sensor-chart'
 import { Navbar } from '@/components/navbar/navbar'
-import { DropIcon, ThermometerSimpleIcon, WavesIcon } from '@phosphor-icons/react/ssr'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { Link } from '@adonisjs/inertia/react'
+import { DropIcon, WavesIcon, ThermometerSimpleIcon } from '@phosphor-icons/react/ssr'
 
 import type { InertiaProps } from '@/types'
+import type { Data } from '@generated/data'
 
-type MetricStats = {
-  min: number | null
-  max: number | null
-  avg: number | null
-  latest: number | null
-  trend: number
-}
-
-type ChartPoint = {
-  date: string
-  ph: number | null
-  ppm: number | null
-  temp: number | null
-}
-
-type Anomaly = {
-  id: number
-  ph: number | null
-  ppm: number | null
-  temp: number | null
-  createdAt: string
-  reasons: string[]
-}
-
-function buildSparklinePath(data: ChartPoint[], key: 'ph' | 'ppm' | 'temp'): string {
-  const values = data.map((d) => d[key]).filter((v): v is number => v !== null)
-  if (values.length < 2) return ''
-  const min = Math.min(...values)
-  const max = Math.max(...values)
-  const range = max - min || 1
-  const points = values.map((v, i) => ({
-    x: 4 + (i / (values.length - 1)) * 92,
-    y: 28 - ((v - min) / range) * 24,
-  }))
-  return points.reduce((path, p, i) => {
-    if (i === 0) return `M ${p.x.toFixed(1)} ${p.y.toFixed(1)}`
-    const prev = points[i - 1]
-    const cpx = (prev.x + p.x) / 2
-    return `${path} C ${cpx.toFixed(1)} ${prev.y.toFixed(1)}, ${cpx.toFixed(1)} ${p.y.toFixed(1)}, ${p.x.toFixed(1)} ${p.y.toFixed(1)}`
-  }, '')
-}
+type ChartData =
+  | {
+      key: string
+    }
+  | Data.Datum.Variants['data']
 
 export default function Dashboard({
-  stats,
-  chartData,
-  anomalies,
-  days,
-  alertLevel,
+  latest,
+  chart,
 }: InertiaProps<{
-  stats: { ph: MetricStats; ppm: MetricStats; temp: MetricStats }
-  chartData: ChartPoint[]
-  anomalies: Anomaly[]
-  days: number
-  alertLevel: 1 | 2 | 3 | 4
+  latest: Data.Datum.Variants['data']
+  chart: ChartData[]
 }>) {
-  const statPeriod = `${days}d`
-  const lastSampleTime = useMemo(() => {
-    const lastDate = chartData.at(-1)?.date
-
-    return lastDate
-      ? new Date(lastDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-      : '--'
-  }, [chartData])
-
   return (
-    <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
-      <Navbar />
-
-      <AlertBanner alertLevel={1} />
-
-      <section className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="font-heading text-base font-bold text-slate-900">Eco-Enzyme Overview</h2>
-          <span className="text-muted-foreground text-xs">Last sample · {lastSampleTime}</span>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <OverviewCard.Root sparklineColor="#2563eb" trend={stats.ph.trend}>
+    <main className="space-y-6">
+      <section className="rounded-b-xl bg-linear-to-tr from-[#30a943] via-[#1E7634] to-[#0F5C29] pb-8">
+        <div className="relative mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
+          <Navbar variant="white" />
+          <h2 className="font-heading mt-12 mb-6 text-5xl font-bold tracking-wide text-white">
+            Overview
+          </h2>
+          <div className="flex gap-15 text-white">
             <div>
-              <OverviewCard.Header
-                icon={
-                  <div className="flex size-7 items-center justify-center rounded-lg border border-blue-100/80 bg-blue-50 text-blue-600">
-                    <DropIcon size={16} weight="bold" />
-                  </div>
-                }
-                label="pH"
-              />
-              <div className="mt-4 flex items-center justify-between gap-2">
-                <div>
-                  <OverviewCard.Value value={stats.ph.latest?.toFixed(2) ?? '--'} />
-                  <OverviewCard.Trend trendUnit="/ day" />
-                </div>
-                <OverviewCard.Sparkline path={buildSparklinePath(chartData, 'ph')} />
+              <div className="mb-1.5 flex items-center gap-1">
+                <DropIcon size={16} weight="bold" className="text-yellow-300" />
+                <p>pH</p>
               </div>
+              <p className="text-4xl font-medium tracking-wide">{latest.ph}</p>
             </div>
-            <OverviewCard.Stats
-              min={stats.ph.min?.toFixed(2) ?? null}
-              avg={stats.ph.avg?.toFixed(2) ?? null}
-              max={stats.ph.max?.toFixed(2) ?? null}
-              period={statPeriod}
-            />
-          </OverviewCard.Root>
-
-          <OverviewCard.Root sparklineColor="#0ea5e9" trend={stats.ppm.trend}>
             <div>
-              <OverviewCard.Header
-                icon={
-                  <div className="flex size-7 items-center justify-center rounded-lg border border-cyan-100/80 bg-cyan-50 text-cyan-600">
-                    <WavesIcon size={16} weight="bold" />
-                  </div>
-                }
-                label="TDS"
-              />
-              <div className="mt-4 flex items-center justify-between gap-2">
-                <div>
-                  <OverviewCard.Value value={stats.ppm.latest?.toFixed(0) ?? '--'} unit="ppm" />
-                  <OverviewCard.Trend trendUnit="ppm / day" />
-                </div>
-                <OverviewCard.Sparkline path={buildSparklinePath(chartData, 'ppm')} />
+              <div className="mb-1.5 flex items-center gap-1">
+                <WavesIcon size={16} weight="bold" className="text-yellow-300" />
+                <p>PPM</p>
               </div>
+              <p className="text-4xl font-medium tracking-wide">{latest.ppm}</p>
             </div>
-            <OverviewCard.Stats
-              min={stats.ppm.min?.toFixed(0) ?? null}
-              avg={stats.ppm.avg?.toFixed(0) ?? null}
-              max={stats.ppm.max?.toFixed(0) ?? null}
-              period={statPeriod}
-            />
-          </OverviewCard.Root>
-
-          <OverviewCard.Root sparklineColor="#059669" trend={stats.temp.trend}>
             <div>
-              <OverviewCard.Header
-                icon={
-                  <div className="flex size-7 items-center justify-center rounded-lg border border-emerald-100/80 bg-emerald-50 text-emerald-600">
-                    <ThermometerSimpleIcon size={16} weight="bold" />
-                  </div>
-                }
-                label="Temperature"
-              />
-              <div className="mt-4 flex items-center justify-between gap-2">
-                <div>
-                  <OverviewCard.Value value={stats.temp.latest?.toFixed(1) ?? '--'} unit="°C" />
-                  <OverviewCard.Trend trendUnit="°C / 24h" />
-                </div>
-                <OverviewCard.Sparkline path={buildSparklinePath(chartData, 'temp')} />
+              <div className="mb-1.5 flex items-center gap-1">
+                <ThermometerSimpleIcon size={16} weight="bold" className="text-yellow-300" />
+                <p>Suhu</p>
               </div>
+              <p className="text-4xl font-medium tracking-wide">{latest.temp}°C</p>
             </div>
-            <OverviewCard.Stats
-              min={stats.temp.min?.toFixed(1) ?? null}
-              avg={stats.temp.avg?.toFixed(1) ?? null}
-              max={stats.temp.max?.toFixed(1) ?? null}
-              period={statPeriod}
-            />
-          </OverviewCard.Root>
+          </div>
+          <img
+            src="/images/Eco Enzyme.webp"
+            alt="Eco Enzyme"
+            className="absolute right-0 -bottom-8 z-0 w-84"
+          />
         </div>
       </section>
 
-      <MetricsChart chartData={chartData} days={days} />
-
-      <AnomalyCard anomalies={anomalies} />
+      <div className="relative z-2 mx-auto -mt-20 max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
+        <section className="mb-5 flex justify-evenly gap-3">
+          <Card className="flex-1">
+            <CardHeader className="border-b">
+              <CardTitle className="font-semibold">Status Perangkat</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              <div className="grid grid-cols-2 gap-x-3 gap-y-5">
+                <div>
+                  <h2 className="mb-1 text-sm font-medium">Terakhir Terkirim</h2>
+                  <p>5 menit yang lalu</p>
+                </div>
+                <div>
+                  <h2 className="mb-1 text-sm font-medium">Sensor Suhu</h2>
+                  <Badge variant="success">Ok</Badge>
+                </div>
+                <div>
+                  <h2 className="mb-1 text-sm font-medium">Sensor PPM</h2>
+                  <Badge variant="success">Ok</Badge>
+                </div>
+                <div>
+                  <h2 className="mb-1 text-sm font-medium">Sensor PH</h2>
+                  <Badge variant="success">Ok</Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="flex-1">
+            <CardHeader className="border-b">
+              <CardTitle className="font-semibold">Informasi Peringatan</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              <div className="flex items-center gap-3">
+                <div className="flex size-12 items-center justify-center rounded-full bg-yellow-50">
+                  <DropIcon size={16} weight="bold" className="text-yellow-600" />
+                </div>
+                <div>
+                  <h2 className="text-base font-medium">pH 9,77 di atas rentang normal</h2>
+                  <p className="text-xs font-light">Baru saja</p>
+                </div>
+              </div>
+              <Separator />
+              <div className="flex items-center gap-3">
+                <div className="flex size-12 items-center justify-center rounded-full bg-yellow-50">
+                  <DropIcon size={16} weight="bold" className="text-yellow-600" />
+                </div>
+                <div>
+                  <h2 className="text-base font-medium">pH 9,77 di atas rentang normal</h2>
+                  <p className="text-xs font-light">Baru saja</p>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter className="border-t">
+              <Link route="dashboard.index">Lihat semua peringatan</Link>
+            </CardFooter>
+          </Card>
+        </section>
+        <section>
+          <h2 className="mb-3 text-lg font-medium">Riwayat Sensor</h2>
+          <div className="flex gap-3">
+            <SensorChart title="pH" className="flex-1" chart={chart} dataKey="ph" />
+            <SensorChart title="PPM" className="flex-1" chart={chart} dataKey="ppm" />
+            <SensorChart
+              title="Suhu (Celcius)"
+              className="flex-1"
+              chart={chart}
+              dataKey="temp"
+            />
+          </div>
+        </section>
+      </div>
     </main>
   )
 }

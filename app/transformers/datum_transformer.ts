@@ -6,4 +6,8 @@ export default class DatumTransformer extends BaseTransformer<Datum> {
   toObject() {
     return this.pick(this.resource, ['id', 'ph', 'ppm', 'temp', 'createdAt'])
   }
+
+  data() {
+    return this.pick(this.resource, ['ph', 'ppm', 'temp'])
+  }
 }

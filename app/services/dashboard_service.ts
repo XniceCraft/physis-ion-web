@@ -19,7 +19,7 @@ type AnomalyRecord = {
 }
 
 type ChartPoint = {
-  date: string
+  key: string
   ph: number | null
   ppm: number | null
   temp: number | null
@@ -93,7 +93,7 @@ function detectAnomalyReasons(
   return reasons
 }
 
-export async function getDashboardData(days: number): Promise<DashboardData> {
+export async function getDashboardData(days: number) {
   const startDate = DateTime.now().minus({ days }).startOf('day')
   const endDate = DateTime.now().endOf('day')
 
@@ -101,46 +101,56 @@ export async function getDashboardData(days: number): Promise<DashboardData> {
     .whereBetween('created_at', [startDate.toSQL(), endDate.toSQL()])
     .orderBy('created_at', 'asc')
 
-  const phValues = records.map((r) => r.ph)
-  const ppmValues = records.map((r) => r.ppm)
-  const tempValues = records.map((r) => r.temp)
+  // const phValues = records.map((r) => r.ph).filter((val) => val !== null)
+  // const ppmValues = records.map((r) => r.ppm).filter((val) => val !== null)
+  // const tempValues = records.map((r) => r.temp).filter((val) => val !== null)
 
-  const stats = {
-    ph: computeStats(phValues),
-    ppm: computeStats(ppmValues),
-    temp: computeStats(tempValues),
-  }
+  // const stats = {
+  //   ph: computeStats(phValues),
+  //   ppm: computeStats(ppmValues),
+  //   temp: computeStats(tempValues),
+  // }
 
   const byDay = new Map<string, Datum>()
   for (const record of records) {
     if (!record.createdAt) continue
-    const dateKey = record.createdAt.toISODate() ?? ''
+
+    const dateKey = days === 1 ? record.createdAt.startOf('hour').toFormat("HH:mm") : record.createdAt.toISODate()
+
     if (dateKey) byDay.set(dateKey, record)
   }
 
   const chartData: ChartPoint[] = Array.from(byDay.entries())
     .sort(([a], [b]) => a.localeCompare(b))
-    .map(([date, record]) => ({
-      date,
+    .map(([key, record]) => ({
+      key,
       ph: record.ph,
       ppm: record.ppm,
       temp: record.temp,
     }))
 
-  const anomalies: AnomalyRecord[] = records
-    .filter((r) => detectAnomalyReasons(r.ph, r.ppm, r.temp).length > 0)
-    .slice(-5)
-    .map((r) => ({
-      id: r.id,
-      ph: r.ph,
-      ppm: r.ppm,
-      temp: r.temp,
-      createdAt: r.createdAt?.toISO() ?? '',
-      reasons: detectAnomalyReasons(r.ph, r.ppm, r.temp),
-    }))
+  // const anomalies: AnomalyRecord[] = records
+  //   .filter((r) => detectAnomalyReasons(r.ph, r.ppm, r.temp).length > 0)
+  //   .slice(-5)
+  //   .map((r) => ({
+  //     id: r.id,
+  //     ph: r.ph,
+  //     ppm: r.ppm,
+  //     temp: r.temp,
+  //     createdAt: r.createdAt?.toISO() ?? '',
+  //     reasons: detectAnomalyReasons(r.ph, r.ppm, r.temp),
+  //   }))
 
-  const latest = records[records.length - 1]
-  const alertLevel = latest ? classifyAlertLevel(latest.ph, latest.ppm, latest.temp) : 1
+  // const latest = records[records.length - 1]
+  // const alertLevel = latest ? classifyAlertLevel(latest.ph, latest.ppm, latest.temp) : 1
 
-  return { stats, chartData, anomalies, days, alertLevel }
+  // return { stats, chartData, anomalies, days, alertLevel }
+  return {
+    latest: {
+      ph: records.at(-1)?.ph ?? null,
+      ppm: records.at(-1)?.ppm ?? null,
+      temp: records.at(-1)?.temp ?? null,
+    },
+    chart: chartData
+  }
 }

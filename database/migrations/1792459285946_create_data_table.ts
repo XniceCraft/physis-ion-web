@@ -6,6 +6,13 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').notNullable()
+      table
+        .integer('device_id')
+        .notNullable()
+        .unsigned()
+        .references('id')
+        .inTable('devices')
+        .onDelete('CASCADE')
       table.float('ph').unsigned()
       table.integer('ppm').unsigned()
       table.float('temp')
